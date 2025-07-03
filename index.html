@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UN-Habitat Dashboard Header</title>
+
+  <!-- ArcGIS JS API styles (optional) -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+
+  <!-- Custom header styles -->
+  <link rel="stylesheet" href="CSS/Header_Tabs.css" />
+
+  
+</head>
+<body>
+
+  <!-- 🔷 START: Full Header -->
+  <div class="header">
+
+    <!-- 🔹 START: Header Left Section (Logo + Title + Nav) -->
+    <div class="header-left">
+
+      <!-- 🔸 START: UN-Habitat Logo -->
+      <div class="header-logo">
+        <img 
+          src="https://habnet.unhabitat.org/sites/default/files/BrandAssets/Logos/Blue%20logo/UN-Habitat%20logo_English.svg"
+          alt="UN-Habitat Logo"
+          class="header-logo-img"
+        />
+      </div>
+      <!-- 🔸 END: UN-Habitat Logo -->
+
+      <!-- 🔸 START: Title and Navigation Wrapper -->
+      <div class="header-title-nav">
+
+        <!-- 🟦 START: Title Block -->
+        <div class="header-title-block">
+          <div class="header-title">Urban Indicators Database</div>
+        </div>
+        <!-- 🟦 END: Title Block -->
+
+        <!-- 🟨 START: Navigation Tabs -->
+        <div class="header-nav">
+
+        <!-- 🔹 Home Tab {<a href="https://data.unhabitat.org/" target="_blank"></a></a>}-->
+        <div class="nav-item"> 
+           HOME
+        </div>
+
+
+        <!-- 🔹 Data by Theme Tab with Dropdown -->
+        <div class="nav-item">
+        DATA BY THEME ▾
+        <div class="dropdown">
+            <a href="#">Urban population trends</a>
+            <a href="#">Access to basic services in cities and urban areas</a>
+            <a href="#">Economic indicators</a>
+            <a href="#">Housing, slums and informal settlements</a>
+            <a href="#">Open spaces and green areas</a>
+            <a href="#">Social inclusion indicators</a>
+            <a href="#">Spatial growth of cities and urban areas</a>
+            <a href="#">Urban environment and quality of life</a>
+            <a href="#">Urban transport</a>
+        </div>
+        </div>
+
+
+        <!-- 🔹 Resources Tab with Dropdown -->
+        <div class="nav-item">
+        RESOURCES <span class="dropdown-icon">&#9662;</span>
+        <div class="dropdown">
+            <a href="#">Datasets</a>
+            <a href="#">Data Visualizations</a>
+            <a href="#">Publications</a>
+            <a href="#">Guidance</a>
+            <a href="#">Urban Observatories</a>
+            <a href="#">COVID-19</a>
+            <a href="#">Urban Monitoring Framework</a>
+            <a href="#">Capacity Development</a>
+            <a href="#">City Prosperity Index</a>
+            <a href="#">National Sample of Cities</a>
+            <a href="#">The Global Public Space Programme</a>
+            <a href="#">News and Data Stories</a>
+        </div>
+        </div>
+
+        <!-- 🔹 DAU Dashboard -->
+        <div class="nav-item active">DASHBOARD</div>
+
+
+
+        <!-- 🔹 SDGs and NUA Tab with Dropdown -->
+        <div class="nav-item">
+        SDGs and NUA <span class="dropdown-icon">&#9662;</span>
+        <div class="dropdown">
+            <a href="#">SDGs</a>
+            <a href="#">New Urban Agenda (NUA)</a>
+        </div>
+        </div>
+
+
+        <!-- 🔹 About (no dropdown) -->
+        <div class="nav-item">ABOUT</div>
+
+        </div>
+        <!-- 🟨 END: Navigation Tabs -->
+
+
+      </div>
+      <!-- 🔸 END: Title and Navigation Wrapper -->
+
+    </div>
+    <!-- 🔹 END: Header Left Section -->
+
+  </div>
+  <!-- 🔷 END: Full Header -->
+
+  <!-- 🔷 Main Layout Wrapper -->
+  <div class="main-layout">
+
+    <!-- 🔹 Left Sidebar Container -->
+    <aside class="sidebar collapsed" id="sidebar">
+    <!-- Toggle Button -->
+    <button id="toggleSidebar" class="toggle-btn">☰</button>
+
+    <!-- Tabs -->
+    <nav class="sidebar-tabs">
+        <ul>
+        <li>
+            <a href="#" data-tab="map" onclick="activateTab('map')">
+            <img src="https://cdn2.iconfinder.com/data/icons/geest-travel-kit/128/travel_journey-04-2-128.png" alt="Map" />
+            </a>
+        </li>
+        <li>
+            <a href="#" data-tab="chart" onclick="activateTab('chart')">
+            <img src="https://cdn0.iconfinder.com/data/icons/thin-line-icons-for-seo-and-development-1/64/Programming_Development_analysis-1024.png" alt="Chart" />
+            </a>
+        </li>
+        <li>
+            <a href="#" data-tab="table" onclick="activateTab('table')">
+            <img src="https://cdn2.iconfinder.com/data/icons/web-app-3/512/Sin_ttulo-1-20-1024.png" alt="Table" />
+            </a>
+        </li>
+        </ul>
+    </nav>
+
+    <!-- Output text below -->
+    <div id="sidebar-status" class="sidebar-status"></div>
+    </aside>
+
+
+
+    <!-- 🔹 Right Content Container -->
+    <main class="main-content">
+
+        <!-- 🟦 Title Section -->
+        <div class="content-title">
+            <h1>Urban Dashboard</h1>
+            <p class="subtitle">An overview of spatial indicators and analytics</p>
+        </div>
+
+        <!-- 🌍 Embedded Map -->
+        <div class="map-container">
+            
+        </div>
+
+    </main>
+
+
+
+  </div>
+
+  <!-- 🔻 Footer -->
+<footer class="footer">
+  <div class="footer-container">
+
+    <!-- 🟦 About -->
+    <div class="footer-column">
+      <h4>About UN-Habitat</h4>
+      <p>
+        UN Habitat is mandated by the UN General Assembly to promote socially and
+        environmentally sustainable towns and cities with the goal of providing
+        adequate shelter for all.
+      </p>
+    </div>
+
+    <!-- 🔗 Important Links -->
+    <div class="footer-column">
+      <h4>Important Links</h4>
+      <ul>
+        <li><a href="https://unhabitat.org" target="_blank">unhabitat.org</a></li>
+        <li><a href="#">UN-Habitat Data & Analytics Unit</a></li>
+        <li><a href="#">EO Toolkit for Sustainable Cities</a></li>
+      </ul>
+    </div>
+
+    <!-- 🔗 Quick Navigation -->
+    <div class="footer-column">
+      <h4>Quick Navigation</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </div>
+
+    <!-- 📬 Contact Info -->
+    <div class="footer-column">
+      <h4>Contact Us</h4>
+      <p><strong>Email:</strong> unhabitat-statistics@un.org</p>
+      <p>Data and Analytics Section, UN-Habitat<br />
+         P.O. Box 30030 00100 Nairobi, Kenya</p>
+    </div>
+
+  </div>
+
+  <!-- 🔻 Copyright -->
+  <div class="footer-bottom">
+    © 2025 United Nations Human Settlements Programme
+  </div>
+</footer>
+
+
+
+  <script src="JS/Nav_Scripts.js"></script>
+
+</body>
+</html>

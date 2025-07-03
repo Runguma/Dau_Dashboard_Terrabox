@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Layout</title>
+
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="../CSS/Charts.css" />
+
+  <!-- Libraries -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../JS/Charts.js" defer></script>
+</head>
+
+<body>
+
+  <!-- Filter Section -->
+  <section class="filter-container">
+    <h3>📊 Filter Data</h3>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="region">Region:</label>
+        <select id="region"><option>-- Select Region --</option></select>
+      </div>
+
+      <div class="filter-group">
+        <label for="subregion">Subregion:</label>
+        <select id="subregion"><option>-- Select Subregion --</option></select>
+      </div>
+
+      <div class="filter-group">
+        <label for="country">Country:</label>
+        <select id="country"><option>-- Select Country --</option></select>
+      </div>
+
+      <div class="filter-group">
+        <label for="city">City:</label>
+        <select id="city"><option>-- Select City --</option></select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chart Grid -->
+  <section class="chart-grid">
+    
+    <!-- Chart 2 - Donut Charts -->
+    <div class="chart-box" id="chart2">
+      <div class="half-container">
+        <div class="half">
+          <h5>
+            Average share of the built-up area <br>
+            of cities that is open space <br>
+            for public use for all (%) [a]
+          </h5>
+          <div id="chart2a" class="half"></div>
+        </div>
+
+        <div class="half">
+          <h5>
+            Average share of urban population <br>
+            with convenient access <br>
+            to open public spaces (%) [b]
+          </h5>
+          <div id="chart2b" class="half"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 3 - Regional Bar Charts with Tabs -->
+    <div class="chart-box" id="chart3">
+      <div class="tabs">
+        <button class="tab-button active" data-tab="chart3a">[a] Open Space per Built-up Area</button>
+        <button class="tab-button" data-tab="chart3b">[b] Population with Access to Open Space</button>
+      </div>
+
+      <div class="tab-content" id="chart3a" style="display: block;"></div>
+      <div class="tab-content" id="chart3b" style="display: none;"></div>
+    </div>
+
+    <!-- Chart 4 - Sub-Regional Chart-->
+    <div class="chart-box" id="chart4">Chart 4</div>
+
+
+
+    <!-- Placeholder for Charts 4 and 5 -->
+    <div class="chart-box" id="chart5">Chart 5</div>
+
+  </section>
+
+</body>
+</html>

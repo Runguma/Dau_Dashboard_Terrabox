@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SDG 11.7.1 - Clustered Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+    #map { height: 100%; width: 100%; }
+    .glow-marker { filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.4)); }
+    .marker-cluster div { color: white !important; font-weight: bold; }
+
+    #info-panel {
+      position: fixed; top: 0; bottom: 0; right: -400px; width: 370px;
+      background: #fff; padding: 20px; overflow-y: auto;
+      border-left: 1px solid #ccc; box-shadow: -2px 0 12px rgba(0, 0, 0, 0.05);
+      transition: right 0.3s ease; z-index: 1000;
+    }
+    #info-panel.open { right: 0; }
+
+    #toggle-btn {
+      position: fixed; top: 50%; right: 9.5px; z-index: 1001;
+      background: #ffffff; border: 1px solid #ccc; padding: 4px 8px;
+      font-size: 16px; cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      transition: right 0.3s ease;
+    }
+    #toggle-btn.shifted { right: 410px; }
+
+    #indicator-toggle {
+      position: fixed; bottom: 10px; left: 10px; z-index: 1001;
+      background: white; border: 1px solid #ccc; padding: 6px 10px; font-size: 13px;
+      box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1); border-radius: 1px;
+      
+    }
+
+    #info-panel h2 { margin: 0 0 16px; font-size: 18px; font-weight: 900; color: #222; }
+
+    #info-panel table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    #info-panel tr { border-bottom: 1px solid #eee; }
+    #info-panel td { padding: 8px 6px; vertical-align: top; }
+    #info-panel td:first-child { background-color: #f5f5f5; font-weight: 500; color: #333; width: 50%; }
+    #info-panel td:last-child { background-color: #fafafa; text-align: right; color: #111; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="info-panel"><em>Click a city marker to view SDG 11.7.1 details...</em></div>
+  <button id="toggle-btn">⟨</button>
+  <div id="indicator-toggle">
+    View:
+    <label><input type="radio" name="metric" value="built" checked> Built-up</label>
+    <label><input type="radio" name="metric" value="access"> Access</label>
+  </div>
+
+  <!-- Leaflet Plugins -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/calvinmetcalf/leaflet-ajax@gh-pages/dist/leaflet.ajax.min.js"></script>
+
+  <script>
+    const clean = val => (val === null || val === undefined || val === "") ? "—" : isNaN(parseFloat(val)) ? val : parseFloat(val).toFixed(1);
+
+    const map = L.map('map', {
+      fullscreenControl: false,
+      maxBounds: [[-90, -180], [90, 180]],
+      maxBoundsViscosity: 1.0
+    }).setView([20, 0], 3);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 20
+    }).addTo(map);
+
+    L.control.scale({ position: 'bottomright', metric: true }).addTo(map);
+
+    L.Control.geocoder({
+      defaultMarkGeocode: false,
+      placeholder: '🔍 Search city or country...'
+    }).on('markgeocode', e => map.setView(e.geocode.center, 6)).addTo(map);
+
+    const infoPanel = document.getElementById('info-panel');
+    const toggleBtn = document.getElementById('toggle-btn');
+
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = infoPanel.classList.contains('open');
+      infoPanel.classList.toggle('open');
+      toggleBtn.classList.toggle('shifted');
+      toggleBtn.innerHTML = isOpen ? '⟨' : '⟩';
+    });
+
+    let currentMetric = "built";
+
+    const colorsBuilt = ["#228B22", "#228B22", "#228B22", "#228B22", "#228B22"];
+    const colorsAccess = ["#2ecc71", "#2ecc71", "#2ecc71", "#2ecc71", "#2ecc71"];
+
+    function getStyle(value, metric) {
+      const group = value >= 80 ? 0 : value >= 60 ? 1 : value >= 40 ? 2 : value >= 20 ? 3 : 4;
+      const color = metric === "built" ? colorsBuilt[group] : colorsAccess[group];
+      const radius = 12 - group * 2;
+      return { radius, fillColor: color, color: "white", weight: 1, fillOpacity: 1, className: "glow-marker" };
+    }
+
+    function createMarkers(data) {
+      const markers = L.markerClusterGroup();
+      const layer = L.geoJson(data, {
+        pointToLayer: (feature, latlng) => {
+          const val = currentMetric === "built" ?
+            feature.properties.Average_share_of_the_built_up_area_of_cities_that_is_open_space :
+            feature.properties.Average_share_of_urban_population_with_convenient_access_to_open;
+          return L.circleMarker(latlng, getStyle(val, currentMetric));
+        },
+        onEachFeature: (feature, layer) => {
+          const p = feature.properties;
+          layer.on("click", () => {
+            infoPanel.classList.add('open');
+            toggleBtn.classList.add('shifted');
+            toggleBtn.innerHTML = '⟩';
+            infoPanel.innerHTML = `
+              <h2>${p.City_Name || "Unknown City"}</h2>
+              <table>
+                <tr><td>Country</td><td>${p.Country_or_Territory_Name || "—"}</td></tr>
+                <tr><td>SDG Region</td><td>${p.SDG_Region || "—"}</td></tr>
+                <tr><td>Sub-Region</td><td>${p.SDG_Sub_Region || "—"}</td></tr>
+                <tr><td>${currentMetric === "built" ? "Open Space Share" : "Access Share"}</td>
+                    <td>${clean(currentMetric === "built" ? p.Average_share_of_the_built_up_area_of_cities_that_is_open_space : p.Average_share_of_urban_population_with_convenient_access_to_open)}%</td></tr>
+                <tr><td>Data Units</td><td>${p.Data_Units || "—"}</td></tr>
+                <tr><td>Data Reference Year</td><td>${p.Data_Reference_Year || "—"}</td></tr>
+                <tr><td>Source</td><td>${p.Data_Source || "—"}</td></tr>
+                <tr><td>Footnote</td><td style="text-align: justify;">${p.FootNote || "—"}</td></tr>
+              </table>`;
+          });
+        }
+      });
+      markers.addLayer(layer);
+      map.eachLayer(l => { if (l instanceof L.MarkerClusterGroup) map.removeLayer(l); });
+      map.addLayer(markers);
+    }
+
+    fetch("https://raw.githubusercontent.com/Runguma/DAU/main/Data/City_1171.json")
+      .then(res => res.json())
+      .then(data => {
+        createMarkers(data);
+        document.querySelectorAll('input[name="metric"]').forEach(input => {
+          input.addEventListener('change', () => {
+            currentMetric = input.value;
+            createMarkers(data);
+          });
+        });
+      });
+  </script>
+  
+</body>
+</html>
